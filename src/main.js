@@ -14,7 +14,7 @@ const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
 const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
 const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
 const GOOGLE_REDIRECT_URI = 'http://localhost'
-const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID'
+const GOOGLE_CLIENT_ID = '221026750825-6s74r6pa2qu0iqbdebel5uhlfo5b4p31.apps.googleusercontent.com'
 app.on('ready', _ => {
   
     let win = new BrowserWindow({
@@ -95,7 +95,7 @@ app.on('ready', _ => {
     })
     windows.push(win);
     const tokens = "";
-    ipc.on('countdown-start', (req, res) => {
+    ipc.on('do-login', (req, res) => {
         var data = useJive().then(function (code) {
            fetchAccessTokens(code).then(function (tokenData) {
               var accessToken = tokenData.data.access_token;
@@ -106,10 +106,7 @@ app.on('ready', _ => {
                 session.defaultSession.cookies.set(cookie, (error) => {
                   if (error) console.error(error)
               });
-              req.sender.send('asynchronous-reply', userDetails);
            })
-
-
            })
 
         }, function (e) {

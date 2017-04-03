@@ -2,10 +2,6 @@ const electron = require('electron')
 
 const ipc = electron.ipcRenderer
 
-document.getElementById('start').addEventListener('click', _ => {
-  ipc.send('countdown-start')
-})
-
-ipc.on('asynchronous-reply', (evt, count) => {
-  console.log(count)
+document.getElementById('login').addEventListener('click', _ => {
+  ipc.send('do-login')
 })
