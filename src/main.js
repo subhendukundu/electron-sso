@@ -14,7 +14,7 @@ const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
 const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
 const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
 const GOOGLE_REDIRECT_URI = 'http://localhost'
-const GOOGLE_CLIENT_ID = '221026750825-6s74r6pa2qu0iqbdebel5uhlfo5b4p31.apps.googleusercontent.com'
+const GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID'
 app.on('ready', _ => {
   
     let win = new BrowserWindow({
