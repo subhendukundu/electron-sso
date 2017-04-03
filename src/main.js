@@ -1,10 +1,8 @@
 const electron = require('electron');
-const electronOauth2 = require('electron-oauth2');
 const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 const ipc = electron.ipcMain
 const {session} = require('electron');
-var GoogleSpreadsheet = require('google-spreadsheet');
 const fetch = require('node-fetch');
 var async = require('async');
 const windows = []
@@ -23,7 +21,7 @@ app.on('ready', _ => {
       height: 800,
       width: 1400
     })
-    win.loadURL(`file://${__dirname}/countdown.html`);
+    win.loadURL(`file://${__dirname}/login.html`);
 
     function useJive () {
        return new Promise((resolve, reject) => { 
@@ -47,7 +45,6 @@ app.on('ready', _ => {
               reject(new Error(`There was an error: ${query.error}`))
             } else if (query.code) {
               // Login is complete
-              // console.log(query.code);
               authWindow.removeAllListeners('closed')
               setImmediate(() => authWindow.close());
               resolve(query.code);
@@ -73,7 +70,6 @@ app.on('ready', _ => {
     });
     };
     function fetchAccessTokens(code) {
-      // console.log(code , "am i here?");
       return axios.post(GOOGLE_TOKEN_URL, qs.stringify({
         code,
         client_id: GOOGLE_CLIENT_ID,
@@ -84,8 +80,14 @@ app.on('ready', _ => {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       })
-      // console.log(response.data)
-      // return response.data
+    }
+    function fetchUserDetails(accessToken) {
+      return axios.get(GOOGLE_PROFILE_URL, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      })
     }
     win.openDevTools();
     win.on('closed', _ => {
@@ -94,18 +96,25 @@ app.on('ready', _ => {
     windows.push(win);
     const tokens = "";
     ipc.on('countdown-start', (req, res) => {
-        var data = useJive().then(function (test) {
-           fetchAccessTokens(test).then(function (argument) {
-              console.log(argument) 
+        var data = useJive().then(function (code) {
+           fetchAccessTokens(code).then(function (tokenData) {
+              var accessToken = tokenData.data.access_token;
+              fetchUserDetails(accessToken).then(function (userData) {
+              var userDetails = userData.data;
+              win.loadURL(`file://${__dirname}/user.html`);
+              const cookie = {url: 'https://eventdesktop.com', name: 'user', value:userDetails.name}
+                session.defaultSession.cookies.set(cookie, (error) => {
+                  if (error) console.error(error)
+              });
+              req.sender.send('asynchronous-reply', userDetails);
            })
-           // console.log(`${tokens} please give me defined`);
-           // console.log("tokens", test)
+
+
+           })
 
         }, function (e) {
            console.error(e)
         })
-        // console.log("data", data)
-        // console.log(`${tokens} please give me undefined`);
     })
 
 
