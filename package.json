@@ -6,12 +6,10 @@
   "private": true,
   "dependencies": {
     "axios": "^0.16.0",
-    "electron-oauth2": "^2.4.1",
-    "request": "^2.79.0"
+    "electron-oauth2": "^2.4.1"
   },
   "devDependencies": {
-    "electron-prebuilt": "^0.37.8",
-    "simple-oauth2": "^1.0.3"
+    "electron-prebuilt": "^0.37.8"
   },
   "scripts": {
     "start": "electron .",
